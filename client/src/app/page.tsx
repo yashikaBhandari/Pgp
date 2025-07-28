@@ -7,27 +7,25 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function HomePage() {
-  const { token } = useAuth()
+  const { isAuthenticated, initializeAuth } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!token) {
+    initializeAuth()
+    
+    if (isAuthenticated) {
+      router.push('/dashboard')
+    } else {
       router.push('/login')
     }
-  }, [token, router])
-
-  if (!token) return null // prevent flicker
+  }, [isAuthenticated, router, initializeAuth])
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-3xl font-bold mb-4">Welcome to MyApp!</h1>
-      <p className="text-lg text-gray-700 mb-6">You are logged in 🎉</p>
-      <button
-        onClick={() => router.push('/dashboard')}
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Go to Dashboard
-      </button>
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading...</p>
+      </div>
+    </div>
   )
 }
